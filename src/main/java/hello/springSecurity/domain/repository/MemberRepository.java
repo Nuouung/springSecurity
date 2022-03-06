@@ -1,12 +1,12 @@
 package hello.springSecurity.domain.repository;
 
-import hello.springSecurity.domain.dao.Member;
+import hello.springSecurity.domain.User;
 
 import java.util.Optional;
 
 public interface MemberRepository {
 
-    Long saveMember(Member member);
-    Optional<Member> findById(Long id);
+    Long saveMember(User member);
+    Optional<User> findById(String name);
 
 }

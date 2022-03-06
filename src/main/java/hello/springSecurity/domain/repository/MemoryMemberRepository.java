@@ -1,6 +1,6 @@
 package hello.springSecurity.domain.repository;
 
-import hello.springSecurity.domain.dao.Member;
+import hello.springSecurity.domain.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
@@ -10,11 +10,12 @@ import java.util.Optional;
 @Repository
 public class MemoryMemberRepository implements MemberRepository {
 
-    private final Map<Long, Member> memberMap = new HashMap<>();
+    private final Map<Long, User> memberMap = new HashMap<>();
+    private final Map<String, Long> memberIdMap = new HashMap<>();
     private Long count = 0L;
 
     @Override
-    public Long saveMember(Member member) {
+    public Long saveMember(User member) {
         count++;
         memberMap.put(count++, member);
 
@@ -22,7 +23,12 @@ public class MemoryMemberRepository implements MemberRepository {
     }
 
     @Override
-    public Optional<Member> findById(Long id) {
-        return Optional.of(memberMap.get(id));
+    public Optional<User> findById(String name) {
+        Optional<Long> memberId = findMemberId(name);
+        return memberId.map(memberMap::get);
+    }
+
+    private Optional<Long> findMemberId(String name) {
+        return Optional.ofNullable(memberIdMap.get(name));
     }
 }
