@@ -15,11 +15,11 @@ public class MemoryMemberRepository implements MemberRepository {
     private Long count = 0L;
 
     @Override
-    public Long saveMember(User member) {
+    public User saveMember(User member) {
         count++;
         memberMap.put(count++, member);
 
-        return count;
+        return member;
     }
 
     @Override
