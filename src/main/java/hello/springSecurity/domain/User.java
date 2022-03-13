@@ -3,9 +3,8 @@ package hello.springSecurity.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter @Setter
+@Getter
 @NoArgsConstructor
 public class User {
 
@@ -34,4 +33,5 @@ public class User {
     public String getRoleKey() {
         return this.role.getKey();
     }
+
 }
