@@ -1,4 +1,4 @@
-package hello.springSecurity.config.auth.dto;
+package hello.springSecurity.security.dto;
 
 import hello.springSecurity.domain.Role;
 import hello.springSecurity.domain.User;
@@ -41,9 +41,9 @@ public class OAuthAttributes {
 
     public User toEntity() {
         return User.builder()
-                .name(name)
-                .email(email)
-                .picture(picture)
+                .name(this.name)
+                .email(this.email)
+                .picture(this.picture)
                 .role(Role.GUEST)
                 .build();
     }

@@ -1,9 +1,9 @@
-package hello.springSecurity.service;
+package hello.springSecurity.security;
 
-import hello.springSecurity.config.auth.dto.OAuthAttributes;
-import hello.springSecurity.config.auth.dto.SessionUser;
+import hello.springSecurity.domain.MemoryUserRepository;
 import hello.springSecurity.domain.User;
-import hello.springSecurity.domain.UserRepository;
+import hello.springSecurity.security.dto.OAuthAttributes;
+import hello.springSecurity.security.dto.SessionUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -16,24 +16,23 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-    private final UserRepository userRepository;
     private final HttpSession httpSession;
+    private final MemoryUserRepository userRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
-        DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
+        OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
-        String registrationId = userRequest
-                .getClientRegistration().getRegistrationId();
-        String userNameAttributeName = userRequest
-                .getClientRegistration().getProviderDetails()
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails()
                 .getUserInfoEndpoint()
                 .getUserNameAttributeName();
 
@@ -43,18 +42,18 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         httpSession.setAttribute("user", new SessionUser(user));
 
         return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey())),
-                attributes.getAttributes(),
-                attributes.getNameAttributeKey()
+            Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey())),
+            attributes.getAttributes(),
+            attributes.getNameAttributeKey()
         );
     }
 
     private User saveOrUpdate(OAuthAttributes attributes) {
-        User user = userRepository.findByEmail(attributes.getEmail())
-                .map(entity -> entity.update(attributes.getName(), attributes.getPicture()))
+
+        Optional<User> optionalUser = userRepository.findByEmail(attributes.getEmail());
+        User user = optionalUser.map(entity -> entity.update(attributes.getName(), attributes.getPicture()))
                 .orElse(attributes.toEntity());
 
-        return userRepository.saveUser(user);
+        return userRepository.save(user);
     }
-
 }

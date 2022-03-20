@@ -8,9 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class User {
 
-    private Long id;
-    private String name;
     private String email;
+    private String name;
     private String picture;
 
     private Role role;
@@ -33,5 +32,7 @@ public class User {
     public String getRoleKey() {
         return this.role.getKey();
     }
+
+
 
 }

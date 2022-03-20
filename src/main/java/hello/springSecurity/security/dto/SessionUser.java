@@ -1,4 +1,4 @@
-package hello.springSecurity.config.auth.dto;
+package hello.springSecurity.security.dto;
 
 import hello.springSecurity.domain.User;
 import lombok.Getter;
